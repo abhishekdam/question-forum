@@ -9,23 +9,18 @@ dotenv.config();
 
 const app = express();
 
-// --- Middleware ---
 app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 
 const PORT = 4000;
 
-// --- 1. Health Check Route ---
 app.get("/health", (_req: Request, res: Response) => {
 	res.json({ status: "ok" });
 });
 
-// --- 2. GET /posts: Fetch all posts (NOW INCLUDES REPLY COUNT) ---
 app.get("/posts", async (_req: Request, res: Response) => {
 	try {
-		// 1. Fetch all post columns ('*') and embed the count from the 'replies' table.
-		// The resulting data structure for replies will be: [{ count: N }]
 		const { data, error } = await supabase
 			.from("posts")
 			.select("*, replies(count)")
@@ -36,12 +31,9 @@ app.get("/posts", async (_req: Request, res: Response) => {
 			return res.status(500).json({ error: error.message });
 		}
 
-		// 2. Map the data to clean up the response and present a single 'reply_count' property.
 		const postsWithReplyCount = data?.map((post) => {
-			// Extract the count from the nested array structure [ { count: N } ]
 			const replyCount = post.replies?.[0]?.count || 0;
 
-			// Create a new post object, excluding the temporary 'replies' array
 			const { replies, ...postWithoutReplies } = post;
 
 			return {
@@ -57,7 +49,6 @@ app.get("/posts", async (_req: Request, res: Response) => {
 	}
 });
 
-// --- 3. POST /posts: Create a new post ---
 app.post("/posts", async (req: Request, res: Response) => {
 	const { title, content, author_name } = req.body;
 	if (!title || !content) {
@@ -82,7 +73,6 @@ app.post("/posts", async (req: Request, res: Response) => {
 	}
 });
 
-// --- 4. PATCH /posts/:id: Generic Update ---
 app.patch("/posts/:id", async (req: Request, res: Response) => {
 	const { id } = req.params;
 	const updates = req.body;
@@ -111,12 +101,10 @@ app.patch("/posts/:id", async (req: Request, res: Response) => {
 	}
 });
 
-// --- 4.1. PATCH /posts/:id/upvote: Increment votes by 1 ---
 app.patch("/posts/:id/upvote", async (req: Request, res: Response) => {
 	const postId = req.params.id;
 
 	try {
-		// 1. Fetch current votes count
 		const { data: postData, error: fetchError } = await supabase
 			.from("posts")
 			.select("votes")
@@ -129,10 +117,8 @@ app.patch("/posts/:id/upvote", async (req: Request, res: Response) => {
 				.json({ error: `Post with ID ${postId} not found or fetch failed.` });
 		}
 
-		// Safely calculate new vote count
 		const newVotes = (postData.votes || 0) + 1;
 
-		// 2. Update the votes column
 		const { data: updatedData, error: updateError } = await supabase
 			.from("posts")
 			.update({ votes: newVotes })
@@ -155,12 +141,10 @@ app.patch("/posts/:id/upvote", async (req: Request, res: Response) => {
 	}
 });
 
-// --- 4.2. PATCH /posts/:id/answered: Mark post as answered ---
 app.patch("/posts/:id/answered", async (req: Request, res: Response) => {
 	const postId = req.params.id;
 
 	try {
-		// Update the is_answered column to true
 		const { data, error } = await supabase
 			.from("posts")
 			.update({ is_answered: true })
@@ -189,7 +173,6 @@ app.patch("/posts/:id/answered", async (req: Request, res: Response) => {
 	}
 });
 
-// --- 5. DELETE /posts/:id: Delete a post ---
 app.delete("/posts/:id", async (req: Request, res: Response) => {
 	const { id } = req.params;
 
@@ -201,7 +184,6 @@ app.delete("/posts/:id", async (req: Request, res: Response) => {
 			return res.status(500).json({ error: error.message });
 		}
 
-		// 204 No Content is the standard response for successful DELETE
 		res.status(204).send();
 	} catch (err) {
 		console.error("Unexpected error in DELETE /posts/:id:", err);
@@ -209,7 +191,6 @@ app.delete("/posts/:id", async (req: Request, res: Response) => {
 	}
 });
 
-// --- 6. POST /posts/:id/replies: Create a reply for a post ---
 app.post("/posts/:id/replies", async (req: Request, res: Response) => {
 	const postId = req.params.id;
 	const { content, author_name } = req.body;
@@ -240,7 +221,6 @@ app.post("/posts/:id/replies", async (req: Request, res: Response) => {
 	}
 });
 
-// --- 7. GET /posts/:id/replies: Fetch all replies for a post ---
 app.get("/posts/:id/replies", async (req: Request, res: Response) => {
 	const postId = req.params.id;
 
@@ -266,7 +246,6 @@ app.get("/posts/:id/replies", async (req: Request, res: Response) => {
 	}
 });
 
-// --- Server Listener ---
 app.listen(PORT, () => {
-	console.log(`🚀 Backend listening on http://localhost:${PORT}`);
+	console.log(`Backend listening on http://localhost:${PORT}`);
 });

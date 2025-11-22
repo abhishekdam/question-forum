@@ -40,7 +40,6 @@ export const PostCard = ({
 			onClick={() => onClick(id)}
 		>
 			<div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-				{/* Vote Section */}
 				<div className="flex flex-row sm:flex-col items-center gap-2 sm:gap-1 min-w-max sm:min-w-[60px]">
 					<Button
 						variant="ghost"
@@ -58,7 +57,6 @@ export const PostCard = ({
 					</span>
 				</div>
 
-				{/* Content Section */}
 				<div className="flex-1 min-w-0">
 					<div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4 mb-2">
 						<h3 className="text-base sm:text-lg md:text-xl font-semibold text-foreground hover:text-primary transition-colors line-clamp-2">

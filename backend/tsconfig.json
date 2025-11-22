@@ -10,7 +10,7 @@
 		"strict": true,
 		"skipLibCheck": true,
 		"resolveJsonModule": true,
-		"allowJs": true, // Skips type checking of all declaration files (*.d.ts) (often helps with external modules)
+		"allowJs": true,
 		"noImplicitAny": false
 	},
 	"include": ["src/**/*"]

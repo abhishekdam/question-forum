@@ -40,7 +40,6 @@ const PostDetail = () => {
 	return (
 		<div className="min-h-screen bg-background">
 			<div className="max-w-4xl mx-auto p-4 sm:p-6 space-y-4 sm:space-y-6">
-				{/* Header */}
 				<div className="flex items-center gap-2 sm:gap-4">
 					<Button
 						variant="ghost"
@@ -53,10 +52,8 @@ const PostDetail = () => {
 					</Button>
 				</div>
 
-				{/* Post Card */}
 				<Card className="p-3 sm:p-4 md:p-6">
 					<div className="flex flex-col sm:flex-row gap-3 sm:gap-6">
-						{/* Vote Section */}
 						<div className="flex flex-row sm:flex-col items-center gap-2 sm:gap-2 min-w-max sm:min-w-fit">
 							<Button
 								variant="ghost"
@@ -74,7 +71,6 @@ const PostDetail = () => {
 							</span>
 						</div>
 
-						{/* Content */}
 						<div className="flex-1 min-w-0">
 							<div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 sm:gap-4 mb-3 sm:mb-4">
 								<h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground break-words">
@@ -121,7 +117,6 @@ const PostDetail = () => {
 					</div>
 				</Card>
 
-				{/* Replies Section */}
 				<div className="space-y-3 sm:space-y-4">
 					<div className="flex items-center justify-between">
 						<h2 className="text-lg sm:text-2xl font-bold text-foreground">
@@ -153,7 +148,6 @@ const PostDetail = () => {
 
 					<Separator className="my-6 sm:my-8" />
 
-					{/* Reply Form */}
 					<div>
 						<h3 className="text-lg sm:text-xl font-semibold text-foreground mb-3 sm:mb-4">
 							Add Your Reply

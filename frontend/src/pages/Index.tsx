@@ -15,7 +15,7 @@ const Index = () => {
 	const [sortBy, setSortBy] = useState<SortOption>("votes");
 
 	const filteredAndSortedPosts = useMemo(() => {
-		let filtered = posts.filter(
+		const filtered = posts.filter(
 			(post) =>
 				post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
 				post.content.toLowerCase().includes(searchQuery.toLowerCase())
@@ -52,7 +52,6 @@ const Index = () => {
 	return (
 		<div className="min-h-screen bg-background">
 			<div className="max-w-5xl mx-auto p-4 sm:p-6 space-y-6 sm:space-y-8">
-				{/* Header */}
 				<header className="space-y-4">
 					<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
 						<div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
@@ -73,7 +72,6 @@ const Index = () => {
 						</div>
 					</div>
 
-					{/* Search and Sort */}
 					<div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
 						<div className="flex-1 min-w-0">
 							<SearchBar value={searchQuery} onChange={setSearchQuery} />
@@ -84,7 +82,6 @@ const Index = () => {
 					</div>
 				</header>
 
-				{/* Posts List */}
 				<div className="space-y-4">
 					{filteredAndSortedPosts.length > 0 ? (
 						filteredAndSortedPosts.map((post) => (

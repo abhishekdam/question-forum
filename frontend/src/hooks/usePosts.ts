@@ -1,9 +1,6 @@
-// src/hooks/usePosts.ts
-
 import { useState, useEffect, useCallback } from "react";
 import { useToast } from "@/hooks/use-toast";
 
-// ✨ NEW: Import the API service functions
 import {
 	fetchAllPosts,
 	fetchPostReplies,
@@ -11,9 +8,8 @@ import {
 	addPostReply,
 	upvotePostById,
 	markPostAsAnswered,
-} from "@/api/axios"; // Adjust path as needed
+} from "@/api/axios";
 
-// --- Interface Definitions (Keep these here for use in the hook) ---
 export interface Post {
 	reply_count: number;
 	id: string;
@@ -33,7 +29,6 @@ export interface Reply {
 	author_name: string;
 	created_at: string;
 }
-// ------------------------------------------
 
 export const usePosts = () => {
 	const [posts, setPosts] = useState<Post[]>([]);
@@ -41,10 +36,9 @@ export const usePosts = () => {
 	const [loading, setLoading] = useState(true);
 	const { toast } = useToast();
 
-	// Fetches all posts using the centralized API function
 	const fetchPosts = useCallback(async () => {
 		try {
-			const data = await fetchAllPosts(); // 🎯 CALL THE SERVICE FUNCTION
+			const data = await fetchAllPosts();
 			setPosts(data);
 		} catch (error) {
 			console.error("Error fetching posts:", error);
@@ -58,17 +52,15 @@ export const usePosts = () => {
 		}
 	}, [toast]);
 
-	// Fetches replies for a specific post
 	const fetchReplies = useCallback(async (postId: string) => {
 		try {
-			const data = await fetchPostReplies(postId); // 🎯 CALL THE SERVICE FUNCTION
+			const data = await fetchPostReplies(postId);
 			setReplies((prev) => ({ ...prev, [postId]: data || [] }));
 		} catch (error) {
 			console.error("Error fetching replies:", error);
 		}
 	}, []);
 
-	// Creates a new post
 	const createPost = async (
 		title: string,
 		content: string,
@@ -76,8 +68,8 @@ export const usePosts = () => {
 	) => {
 		console.log("Creating post with author_name:", title, content, author_name);
 		try {
-			await createNewPost(title, content, author_name); // 🎯 CALL THE SERVICE FUNCTION
-			fetchPosts(); // Refetch posts to update the list
+			await createNewPost(title, content, author_name);
+			fetchPosts();
 		} catch (error) {
 			console.error("Error creating post:", error);
 			toast({
@@ -89,15 +81,14 @@ export const usePosts = () => {
 		}
 	};
 
-	// Adds a reply to a post
 	const addReply = async (
 		postId: string,
 		content: string,
 		authorName: string
 	) => {
 		try {
-			await addPostReply(postId, content, authorName); // 🎯 CALL THE SERVICE FUNCTION
-			fetchReplies(postId); // Fetch the updated replies for this post
+			await addPostReply(postId, content, authorName);
+			fetchReplies(postId);
 		} catch (error) {
 			console.error("Error adding reply:", error);
 			toast({
@@ -109,10 +100,9 @@ export const usePosts = () => {
 		}
 	};
 
-	// Upvotes a post
 	const upvotePost = async (postId: string) => {
 		try {
-			await upvotePostById(postId); // 🎯 CALL THE SERVICE FUNCTION
+			await upvotePostById(postId);
 			fetchPosts();
 		} catch (error) {
 			console.error("Error upvoting post:", error);
@@ -125,10 +115,9 @@ export const usePosts = () => {
 		}
 	};
 
-	// Marks a post as answered
 	const markAsAnswered = async (postId: string) => {
 		try {
-			await markPostAsAnswered(postId); // 🎯 CALL THE SERVICE FUNCTION
+			await markPostAsAnswered(postId);
 			fetchPosts();
 		} catch (error) {
 			console.error("Error marking post as answered:", error);
@@ -141,12 +130,10 @@ export const usePosts = () => {
 		}
 	};
 
-	// --- useEffect (Polling remains the same) ---
-
 	useEffect(() => {
 		fetchPosts();
 
-		const intervalId = setInterval(fetchPosts, 5000); // Poll every 5 seconds
+		const intervalId = setInterval(fetchPosts, 5000);
 
 		return () => {
 			clearInterval(intervalId);
