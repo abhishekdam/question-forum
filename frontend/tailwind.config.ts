@@ -9,16 +9,18 @@ export default {
 		"./app/**/*.{ts,tsx}",
 		"./src/**/*.{ts,tsx}",
 	],
-	prefix: "",
 	theme: {
-		container: {
-			center: true,
-			padding: "2rem",
-			screens: {
-				"2xl": "1400px",
-			},
-		},
 		extend: {
+			screens: {
+				xs: "375px",
+			},
+			container: {
+				center: true,
+				padding: "2rem",
+				screens: {
+					"2xl": "1400px",
+				},
+			},
 			colors: {
 				border: "hsl(var(--border))",
 				input: "hsl(var(--input))",

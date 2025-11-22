@@ -53,29 +53,38 @@ export const ReplyForm = ({ postId, onAddReply }: ReplyFormProps) => {
 	};
 
 	return (
-		<form onSubmit={handleSubmit} className="space-y-4">
-			<div className="space-y-2">
-				<Label htmlFor="reply-author">Your Name</Label>
+		<form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+			<div className="space-y-1 sm:space-y-2">
+				<Label htmlFor="reply-author" className="text-xs sm:text-sm">
+					Your Name
+				</Label>
 				<Input
 					id="reply-author"
 					placeholder="Enter your name"
 					value={authorName}
 					onChange={(e) => setAuthorName(e.target.value)}
 					disabled={isSubmitting}
+					className="text-sm"
 				/>
 			</div>
-			<div className="space-y-2">
-				<Label htmlFor="reply-content">Your Reply</Label>
+			<div className="space-y-1 sm:space-y-2">
+				<Label htmlFor="reply-content" className="text-xs sm:text-sm">
+					Your Reply
+				</Label>
 				<Textarea
 					id="reply-content"
 					placeholder="Share your insights or answer..."
 					value={content}
 					onChange={(e) => setContent(e.target.value)}
-					className="min-h-[120px]"
+					className="min-h-[100px] sm:min-h-[120px] text-sm"
 					disabled={isSubmitting}
 				/>
 			</div>
-			<Button type="submit" disabled={isSubmitting}>
+			<Button
+				type="submit"
+				disabled={isSubmitting}
+				className="w-full sm:w-auto"
+			>
 				{isSubmitting ? "Posting..." : "Post Reply"}
 			</Button>
 		</form>

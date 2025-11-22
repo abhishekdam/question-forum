@@ -126,6 +126,6 @@ All colors MUST be HSL.
 	}
 
 	.card-hover {
-		@apply transition-all duration-200 hover:shadow-lg hover:shadow-primary/5 hover:border-primary/20;
+		@apply transition-all duration-200 hover:shadow-lg;
 	}
 }

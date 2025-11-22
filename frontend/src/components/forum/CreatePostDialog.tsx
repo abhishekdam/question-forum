@@ -67,12 +67,13 @@ export const CreatePostDialog = ({ onCreatePost }: CreatePostDialogProps) => {
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>
-				<Button size="lg" className="gap-2 font-semibold">
+				<Button size="lg" className="gap-2 font-semibold w-full sm:w-auto">
 					<Plus className="h-5 w-5" />
-					New Question
+					<span className="hidden sm:inline">New Question</span>
+					<span className="sm:hidden">Ask</span>
 				</Button>
 			</DialogTrigger>
-			<DialogContent className="sm:max-w-[600px]">
+			<DialogContent className="w-[95vw] sm:w-full sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
 				<DialogHeader>
 					<DialogTitle className="text-2xl">Ask a Question</DialogTitle>
 					<DialogDescription>
