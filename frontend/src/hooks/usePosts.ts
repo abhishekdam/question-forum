@@ -8,6 +8,7 @@ import {
 	addPostReply,
 	upvotePostById,
 	markPostAsAnswered,
+	deletePostById,
 } from "@/api/axios";
 
 export interface Post {
@@ -161,6 +162,29 @@ export const usePosts = () => {
 	};
 
 	/**
+	 * Delete a post
+	 */
+	const deletePost = async (postId: string) => {
+		try {
+			await deletePostById(postId);
+			fetchPosts(); // Refresh posts list after deletion
+			toast({
+				title: "Success",
+				description: "Post deleted successfully",
+			});
+			return true;
+		} catch (error) {
+			console.error("Error deleting post:", error);
+			toast({
+				title: "Error",
+				description: "Failed to delete post",
+				variant: "destructive",
+			});
+			throw error;
+		}
+	};
+
+	/**
 	 * Effect Hook: Automatic Polling
 	 */
 	useEffect(() => {
@@ -185,5 +209,6 @@ export const usePosts = () => {
 		addReply,
 		upvotePost,
 		markAsAnswered,
+		deletePost,
 	};
 };

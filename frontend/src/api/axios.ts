@@ -78,3 +78,11 @@ export const markPostAsAnswered = async (postId: string): Promise<void> => {
 		is_answered: true,
 	});
 };
+
+/**
+ * Delete a Post
+ * Removes a post and all associated replies from the database
+ */
+export const deletePostById = async (postId: string): Promise<void> => {
+	await axios.delete(`${API_BASE_URL}/posts/${postId}`);
+};

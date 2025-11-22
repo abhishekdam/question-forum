@@ -1,10 +1,19 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, ArrowBigUp, CheckCircle } from "lucide-react";
+import { ArrowLeft, ArrowBigUp, CheckCircle, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
+import {
+	AlertDialog,
+	AlertDialogAction,
+	AlertDialogCancel,
+	AlertDialogContent,
+	AlertDialogDescription,
+	AlertDialogTitle,
+	AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { ReplyCard } from "@/components/forum/ReplyCard";
 import { ReplyForm } from "@/components/forum/ReplyForm";
 import { usePosts } from "@/hooks/usePosts";
@@ -18,11 +27,21 @@ const PostDetail = () => {
 	const navigate = useNavigate();
 
 	// Get posts data and functions from custom hook
-	const { posts, replies, fetchReplies, addReply, upvotePost, markAsAnswered } =
-		usePosts();
+	const {
+		posts,
+		replies,
+		fetchReplies,
+		addReply,
+		upvotePost,
+		markAsAnswered,
+		deletePost,
+	} = usePosts();
 
 	// State to store the current post
 	const [post, setPost] = useState(posts.find((p) => p.id === id));
+
+	// State for delete confirmation and loading
+	const [isDeleting, setIsDeleting] = useState(false);
 
 	/**
 	 * Fetch replies when post ID changes
@@ -39,6 +58,23 @@ const PostDetail = () => {
 	useEffect(() => {
 		setPost(posts.find((p) => p.id === id));
 	}, [posts, id]);
+
+	/**
+	 * Handle post deletion with confirmation
+	 */
+	const handleDeletePost = async () => {
+		if (!id) return;
+		setIsDeleting(true);
+		try {
+			await deletePost(id);
+			// Navigate back to home after successful deletion
+			setTimeout(() => navigate("/"), 500);
+		} catch (error) {
+			console.error("Failed to delete post:", error);
+		} finally {
+			setIsDeleting(false);
+		}
+	};
 
 	// Show not found message if post doesn't exist
 	if (!post) {
@@ -90,26 +126,59 @@ const PostDetail = () => {
 								<h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground break-words">
 									{post.title}
 								</h1>
-								{post.is_answered ? (
-									<Badge
-										variant="outline"
-										className="bg-answered/10 text-answered border-answered/30 w-fit flex-shrink-0"
-									>
-										<CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-										<span className="text-xs sm:text-sm">Answered</span>
-									</Badge>
-								) : (
-									<Button
-										variant="outline"
-										size="sm"
-										onClick={() => markAsAnswered(post.id)}
-										className="gap-2 text-xs sm:text-sm w-full sm:w-auto"
-									>
-										<CheckCircle className="h-3 w-3 sm:h-4 sm:w-4" />
-										<span className="hidden sm:inline">Mark as Answered</span>
-										<span className="sm:hidden">Mark Answered</span>
-									</Button>
-								)}
+								<div className="flex gap-2 flex-wrap sm:flex-nowrap">
+									{post.is_answered ? (
+										<Badge
+											variant="outline"
+											className="bg-answered/10 text-answered border-answered/30 w-fit flex-shrink-0"
+										>
+											<CheckCircle className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+											<span className="text-xs sm:text-sm">Answered</span>
+										</Badge>
+									) : (
+										<Button
+											variant="outline"
+											size="sm"
+											onClick={() => markAsAnswered(post.id)}
+											className="gap-2 text-xs sm:text-sm flex-shrink-0"
+										>
+											<CheckCircle className="h-3 w-3 sm:h-4 sm:w-4" />
+											<span className="hidden sm:inline">Mark as Answered</span>
+											<span className="sm:hidden">Mark Answered</span>
+										</Button>
+									)}
+									<AlertDialog>
+										<AlertDialogTrigger asChild>
+											<Button
+												variant="destructive"
+												size="sm"
+												className="gap-2 text-xs sm:text-sm flex-shrink-0"
+												disabled={isDeleting}
+											>
+												<Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
+												<span className="hidden sm:inline">Delete</span>
+												<span className="sm:hidden">Delete</span>
+											</Button>
+										</AlertDialogTrigger>
+										<AlertDialogContent>
+											<AlertDialogTitle>Delete Post</AlertDialogTitle>
+											<AlertDialogDescription>
+												Are you sure you want to delete this post? This action
+												cannot be undone. All replies will also be deleted.
+											</AlertDialogDescription>
+											<div className="flex gap-3 justify-end">
+												<AlertDialogCancel>Cancel</AlertDialogCancel>
+												<AlertDialogAction
+													onClick={handleDeletePost}
+													disabled={isDeleting}
+													className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+												>
+													{isDeleting ? "Deleting..." : "Delete"}
+												</AlertDialogAction>
+											</div>
+										</AlertDialogContent>
+									</AlertDialog>
+								</div>
 							</div>
 
 							<p className="text-sm sm:text-base text-foreground mb-3 sm:mb-4 whitespace-pre-wrap break-words">
