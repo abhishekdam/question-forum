@@ -2,8 +2,16 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
 interface SearchBarProps {
+	// Current search query value
+	// Used for controlled input
 	value: string;
+
+	// Callback function when search input changes
+	// Receives: updated search query string
 	onChange: (value: string) => void;
+
+	// Placeholder text displayed in input
+	// Default: "Search questions..."
 	placeholder?: string;
 }
 
@@ -14,7 +22,10 @@ export const SearchBar = ({
 }: SearchBarProps) => {
 	return (
 		<div className="relative">
+			{/* Search Icon - Absolute positioning inside input */}
 			<Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+
+			{/* Search Input Field - Controlled component */}
 			<Input
 				type="text"
 				placeholder={placeholder}

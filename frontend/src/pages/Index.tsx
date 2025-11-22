@@ -9,22 +9,36 @@ import { usePosts } from "@/hooks/usePosts";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const Index = () => {
+	// Router navigation hook
 	const navigate = useNavigate();
+
+	// Get posts data and functions from custom hook
 	const { posts, replies, loading, createPost, upvotePost } = usePosts();
+
+	// State for search functionality
 	const [searchQuery, setSearchQuery] = useState("");
+
+	// State for sort selection (votes or date)
 	const [sortBy, setSortBy] = useState<SortOption>("votes");
 
+	/**
+	 * Filter and sort posts based on search query and sort option
+	 */
 	const filteredAndSortedPosts = useMemo(() => {
+		// Filter posts by title or content matching the search query
 		const filtered = posts.filter(
 			(post) =>
 				post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
 				post.content.toLowerCase().includes(searchQuery.toLowerCase())
 		);
 
+		// Sort filtered posts by selected option
 		return filtered.sort((a, b) => {
 			if (sortBy === "votes") {
+				// Sort by votes (highest first)
 				return b.votes - a.votes;
 			} else {
+				// Sort by creation date (newest first)
 				return (
 					new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
 				);
@@ -32,6 +46,9 @@ const Index = () => {
 		});
 	}, [posts, searchQuery, sortBy]);
 
+	/**
+	 * Get reply count for a specific post
+	 */
 	const getReplyCount = (postId: string) => {
 		return replies[postId]?.length || 0;
 	};

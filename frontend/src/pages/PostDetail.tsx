@@ -11,22 +11,36 @@ import { usePosts } from "@/hooks/usePosts";
 import { formatDistanceToNow } from "date-fns";
 
 const PostDetail = () => {
+	// Get post ID from URL parameters
 	const { id } = useParams<{ id: string }>();
+
+	// Router navigation
 	const navigate = useNavigate();
+
+	// Get posts data and functions from custom hook
 	const { posts, replies, fetchReplies, addReply, upvotePost, markAsAnswered } =
 		usePosts();
+
+	// State to store the current post
 	const [post, setPost] = useState(posts.find((p) => p.id === id));
 
+	/**
+	 * Fetch replies when post ID changes
+	 */
 	useEffect(() => {
 		if (id) {
 			fetchReplies(id);
 		}
 	}, [id]);
 
+	/**
+	 * Update post state when posts or ID changes
+	 */
 	useEffect(() => {
 		setPost(posts.find((p) => p.id === id));
 	}, [posts, id]);
 
+	// Show not found message if post doesn't exist
 	if (!post) {
 		return (
 			<div className="min-h-screen bg-background flex items-center justify-center">
