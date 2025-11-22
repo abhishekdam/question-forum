@@ -93,7 +93,7 @@ const Index = () => {
 								isAnswered={post.is_answered}
 								authorName={post.author_name}
 								createdAt={post.created_at}
-								replyCount={getReplyCount(post.id)}
+								replyCount={post.reply_count || 0}
 								onVote={upvotePost}
 								onClick={(id) => navigate(`/post/${id}`)}
 							/>
