@@ -8,12 +8,11 @@ import supabase from "./supabaseClient.js";
 dotenv.config();
 
 const app = express();
+const PORT = 4000;
 
 app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
-
-const PORT = 4000;
 
 app.get("/health", (_req: Request, res: Response) => {
 	res.json({ status: "ok" });
@@ -31,26 +30,26 @@ app.get("/posts", async (_req: Request, res: Response) => {
 			return res.status(500).json({ error: error.message });
 		}
 
-		const postsWithReplyCount = data?.map((post) => {
+		const posts = data?.map((post) => {
 			const replyCount = post.replies?.[0]?.count || 0;
-
-			const { replies, ...postWithoutReplies } = post;
+			const { replies, ...postData } = post;
 
 			return {
-				...postWithoutReplies,
+				...postData,
 				reply_count: replyCount,
 			};
 		});
 
-		res.json(postsWithReplyCount || []);
+		res.json(posts || []);
 	} catch (err) {
-		console.error("Unexpected error in GET /posts:", err);
+		console.error("Unexpected error fetching posts:", err);
 		res.status(500).json({ error: String(err) });
 	}
 });
 
 app.post("/posts", async (req: Request, res: Response) => {
 	const { title, content, author_name } = req.body;
+
 	if (!title || !content) {
 		return res.status(400).json({ error: "title and content are required" });
 	}
@@ -63,12 +62,13 @@ app.post("/posts", async (req: Request, res: Response) => {
 			.single();
 
 		if (error) {
-			console.error("Supabase error inserting post:", error.message);
+			console.error("Supabase error creating post:", error.message);
 			return res.status(500).json({ error: error.message });
 		}
+
 		res.status(201).json(data);
 	} catch (err) {
-		console.error("Unexpected error in POST /posts:", err);
+		console.error("Unexpected error creating post:", err);
 		res.status(500).json({ error: String(err) });
 	}
 });
@@ -86,89 +86,79 @@ app.patch("/posts/:id", async (req: Request, res: Response) => {
 			.single();
 
 		if (error) {
-			console.error(`Supabase error updating post ${id}:`, error.message);
+			console.error(`Error updating post ${id}:`, error.message);
 			return res.status(500).json({ error: error.message });
 		}
 
 		if (!data) {
-			return res.status(404).json({ error: `Post with ID ${id} not found.` });
+			return res.status(404).json({ error: "Post not found" });
 		}
 
 		res.json(data);
 	} catch (err) {
-		console.error("Unexpected error in PATCH /posts/:id:", err);
+		console.error("Unexpected error updating post:", err);
 		res.status(500).json({ error: String(err) });
 	}
 });
 
 app.patch("/posts/:id/upvote", async (req: Request, res: Response) => {
-	const postId = req.params.id;
+	const { id } = req.params;
 
 	try {
-		const { data: postData, error: fetchError } = await supabase
+		const { data: post, error: fetchError } = await supabase
 			.from("posts")
 			.select("votes")
-			.eq("id", postId)
+			.eq("id", id)
 			.single();
 
-		if (fetchError || !postData) {
-			return res
-				.status(404)
-				.json({ error: `Post with ID ${postId} not found or fetch failed.` });
+		if (fetchError || !post) {
+			return res.status(404).json({ error: "Post not found" });
 		}
 
-		const newVotes = (postData.votes || 0) + 1;
+		const newVoteCount = (post.votes || 0) + 1;
 
-		const { data: updatedData, error: updateError } = await supabase
+		const { data: updatedPost, error: updateError } = await supabase
 			.from("posts")
-			.update({ votes: newVotes })
-			.eq("id", postId)
+			.update({ votes: newVoteCount })
+			.eq("id", id)
 			.select()
 			.single();
 
 		if (updateError) {
-			console.error(
-				`Supabase error upvoting post ${postId}:`,
-				updateError.message
-			);
+			console.error(`Error upvoting post ${id}:`, updateError.message);
 			return res.status(500).json({ error: updateError.message });
 		}
 
-		res.json(updatedData);
+		res.json(updatedPost);
 	} catch (err) {
-		console.error(`Unexpected error in PATCH /posts/${postId}/upvote:`, err);
+		console.error("Unexpected error upvoting post:", err);
 		res.status(500).json({ error: String(err) });
 	}
 });
 
 app.patch("/posts/:id/answered", async (req: Request, res: Response) => {
-	const postId = req.params.id;
+	const { id } = req.params;
 
 	try {
-		const { data, error } = await supabase
+		const { data: post, error } = await supabase
 			.from("posts")
 			.update({ is_answered: true })
-			.eq("id", postId)
+			.eq("id", id)
 			.select()
 			.single();
 
 		if (error) {
-			console.error(
-				`Supabase error marking post ${postId} as answered:`,
-				error.message
-			);
+			console.error(`Error marking post ${id} as answered:`, error.message);
 			return res.status(500).json({ error: error.message });
 		}
 
-		if (!data) {
-			return res
-				.status(404)
-				.json({ error: `Post with ID ${postId} not found.` });
+		if (!post) {
+			return res.status(404).json({ error: "Post not found" });
 		}
 
-		res.json(data);
+		res.json(post);
 	} catch (err) {
-		console.error(`Unexpected error in PATCH /posts/${postId}/answered:`, err);
+		console.error("Unexpected error marking post as answered:", err);
 		res.status(500).json({ error: String(err) });
 	}
 });
@@ -180,72 +170,66 @@ app.delete("/posts/:id", async (req: Request, res: Response) => {
 		const { error } = await supabase.from("posts").delete().eq("id", id);
 
 		if (error) {
-			console.error(`Supabase error deleting post ${id}:`, error.message);
+			console.error(`Error deleting post ${id}:`, error.message);
 			return res.status(500).json({ error: error.message });
 		}
 
 		res.status(204).send();
 	} catch (err) {
-		console.error("Unexpected error in DELETE /posts/:id:", err);
+		console.error("Unexpected error deleting post:", err);
 		res.status(500).json({ error: String(err) });
 	}
 });
 
 app.post("/posts/:id/replies", async (req: Request, res: Response) => {
-	const postId = req.params.id;
+	const { id } = req.params;
 	const { content, author_name } = req.body;
 
 	if (!content) {
-		return res.status(400).json({ error: "Content is required for a reply" });
+		return res.status(400).json({ error: "Reply content is required" });
 	}
 
 	try {
-		const { data, error } = await supabase
+		const { data: reply, error } = await supabase
 			.from("replies")
-			.insert([{ post_id: postId, content, author_name }])
+			.insert([{ post_id: id, content, author_name }])
 			.select()
 			.single();
 
 		if (error) {
-			console.error(
-				`Supabase error inserting reply for post ${postId}:`,
-				error.message
-			);
+			console.error(`Error adding reply to post ${id}:`, error.message);
 			return res.status(500).json({ error: error.message });
 		}
 
-		res.status(201).json(data);
+		res.status(201).json(reply);
 	} catch (err) {
-		console.error(`Unexpected error in POST /posts/${postId}/replies:`, err);
+		console.error("Unexpected error adding reply:", err);
 		res.status(500).json({ error: String(err) });
 	}
 });
 
 app.get("/posts/:id/replies", async (req: Request, res: Response) => {
-	const postId = req.params.id;
+	const { id } = req.params;
 
 	try {
-		const { data, error } = await supabase
+		const { data: replies, error } = await supabase
 			.from("replies")
 			.select("*")
-			.eq("post_id", postId)
+			.eq("post_id", id)
 			.order("created_at", { ascending: true });
 
 		if (error) {
-			console.error(
-				`Supabase error fetching replies for post ${postId}:`,
-				error.message
-			);
+			console.error(`Error fetching replies for post ${id}:`, error.message);
 			return res.status(500).json({ error: error.message });
 		}
 
-		res.json(data || []);
+		res.json(replies || []);
 	} catch (err) {
-		console.error(`Unexpected error in GET /posts/${postId}/replies:`, err);
+		console.error("Unexpected error fetching replies:", err);
 		res.status(500).json({ error: String(err) });
 	}
 });
 
 app.listen(PORT, () => {
-	console.log(`Backend listening on http://localhost:${PORT}`);
+	console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
