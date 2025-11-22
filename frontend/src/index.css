@@ -2,93 +2,109 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
 @layer base {
+	/**
+	 * Light Mode 
+	 */
 	:root {
-		--background: 0 0% 99%;
-		--foreground: 230 25% 15%;
+		/* Background and Text Colors */
+		--background: 0 0% 99%; /* Off-white background */
+		--foreground: 230 25% 15%; /* Dark blue text */
 
-		--card: 0 0% 100%;
-		--card-foreground: 230 25% 15%;
+		/* Card Container Colors */
+		--card: 0 0% 100%; /* Pure white for cards */
+		--card-foreground: 230 25% 15%; /* Dark text on cards */
 
-		--popover: 0 0% 100%;
-		--popover-foreground: 230 25% 15%;
+		/* Popover/Dropdown Colors */
+		--popover: 0 0% 100%; /* White popover background */
+		--popover-foreground: 230 25% 15%; /* Dark popover text */
 
-		--primary: 230 70% 48%;
-		--primary-foreground: 0 0% 100%;
+		/* Primary Action Color (buttons, links) */
+		--primary: 230 70% 48%; /* Vibrant blue */
+		--primary-foreground: 0 0% 100%; /* White text on primary */
 
-		--secondary: 230 20% 96%;
-		--secondary-foreground: 230 25% 15%;
+		/* Secondary Color (subtle highlights) */
+		--secondary: 230 20% 96%; /* Very light blue-grey */
+		--secondary-foreground: 230 25% 15%; /* Dark text */
 
-		--muted: 230 15% 96%;
-		--muted-foreground: 230 10% 50%;
+		/* Muted/Disabled States */
+		--muted: 230 15% 96%; /* Light grey for disabled */
+		--muted-foreground: 230 10% 50%; /* Medium grey text */
 
-		--accent: 35 90% 55%;
-		--accent-foreground: 0 0% 100%;
+		/* Accent Color (highlights, warnings) */
+		--accent: 35 90% 55%; /* Bright orange */
+		--accent-foreground: 0 0% 100%; /* White text on accent */
 
-		--destructive: 0 84.2% 60.2%;
-		--destructive-foreground: 0 0% 100%;
+		/* Destructive Action Color (delete, error) */
+		--destructive: 0 84.2% 60.2%; /* Vibrant red */
+		--destructive-foreground: 0 0% 100%; /* White text */
 
-		--border: 230 15% 90%;
-		--input: 230 15% 90%;
-		--ring: 230 70% 48%;
+		/* Border and Input Colors */
+		--border: 230 15% 90%; /* Light blue-grey borders */
+		--input: 230 15% 90%; /* Light input backgrounds */
+		--ring: 230 70% 48%; /* Focus ring color (blue) */
 
-		--radius: 0.75rem;
+		/* Border Radius Default */
+		--radius: 0.75rem; /* Rounded corners (0.75rem = 12px) */
 
-		--vote-color: 35 90% 55%;
-		--answered-color: 142 71% 45%;
+		/* Forum-Specific Colors */
+		--vote-color: 35 90% 55%; /* Orange for upvote button */
+		--answered-color: 142 71% 45%; /* Green for answered badge */
 
+		/* Sidebar Colors (if sidebar navigation used) */
 		--sidebar-background: 0 0% 98%;
-
 		--sidebar-foreground: 240 5.3% 26.1%;
-
 		--sidebar-primary: 240 5.9% 10%;
-
 		--sidebar-primary-foreground: 0 0% 98%;
-
 		--sidebar-accent: 240 4.8% 95.9%;
-
 		--sidebar-accent-foreground: 240 5.9% 10%;
-
 		--sidebar-border: 220 13% 91%;
-
 		--sidebar-ring: 217.2 91.2% 59.8%;
 	}
 
 	.dark {
-		--background: 230 30% 8%;
-		--foreground: 230 10% 95%;
+		/* Dark Mode Backgrounds and Text */
+		--background: 230 30% 8%; /* Very dark blue-grey */
+		--foreground: 230 10% 95%; /* Very light text */
 
-		--card: 230 25% 11%;
-		--card-foreground: 230 10% 95%;
+		/* Dark Mode Cards */
+		--card: 230 25% 11%; /* Dark blue-grey cards */
+		--card-foreground: 230 10% 95%; /* Light text on cards */
 
-		--popover: 230 25% 11%;
-		--popover-foreground: 230 10% 95%;
+		/* Dark Mode Popover */
+		--popover: 230 25% 11%; /* Dark popover background */
+		--popover-foreground: 230 10% 95%; /* Light popover text */
 
-		--primary: 230 70% 55%;
-		--primary-foreground: 0 0% 100%;
+		/* Dark Mode Primary (buttons remain vibrant) */
+		--primary: 230 70% 55%; /* Slightly lighter blue for contrast */
+		--primary-foreground: 0 0% 100%; /* White text */
 
-		--secondary: 230 20% 15%;
-		--secondary-foreground: 230 10% 95%;
+		/* Dark Mode Secondary */
+		--secondary: 230 20% 15%; /* Very dark blue-grey */
+		--secondary-foreground: 230 10% 95%; /* Light text */
 
-		--muted: 230 20% 15%;
-		--muted-foreground: 230 10% 65%;
+		/* Dark Mode Muted (disabled states) */
+		--muted: 230 20% 15%; /* Dark grey for disabled */
+		--muted-foreground: 230 10% 65%; /* Medium light grey text */
 
-		--accent: 35 90% 60%;
-		--accent-foreground: 0 0% 100%;
+		/* Dark Mode Accent (slightly lighter for contrast) */
+		--accent: 35 90% 60%; /* Slightly lighter orange */
+		--accent-foreground: 0 0% 100%; /* White text */
 
-		--destructive: 0 62.8% 50%;
-		--destructive-foreground: 0 0% 100%;
+		/* Dark Mode Destructive */
+		--destructive: 0 62.8% 50%; /* Adjusted red for dark mode */
+		--destructive-foreground: 0 0% 100%; /* White text */
 
-		--border: 230 20% 20%;
-		--input: 230 20% 20%;
-		--ring: 230 70% 55%;
+		/* Dark Mode Borders and Inputs */
+		--border: 230 20% 20%; /* Medium dark grey borders */
+		--input: 230 20% 20%; /* Medium dark input background */
+		--ring: 230 70% 55%; /* Focus ring color (lighter blue) */
 
-		--vote-color: 35 90% 60%;
-		--answered-color: 142 71% 50%;
+		/* Dark Mode Forum Colors */
+		--vote-color: 35 90% 60%; /* Slightly lighter orange */
+		--answered-color: 142 71% 50%; /* Slightly lighter green */
+
+		/* Dark Mode Sidebar */
 		--sidebar-background: 240 5.9% 10%;
 		--sidebar-foreground: 240 4.8% 95.9%;
 		--sidebar-primary: 224.3 76.3% 48%;

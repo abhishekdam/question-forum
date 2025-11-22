@@ -31,11 +31,16 @@ export interface Reply {
 }
 
 export const usePosts = () => {
+	// State management
 	const [posts, setPosts] = useState<Post[]>([]);
 	const [replies, setReplies] = useState<Record<string, Reply[]>>({});
 	const [loading, setLoading] = useState(true);
 	const { toast } = useToast();
 
+	/**
+	 * Fetch all posts from the server
+	 * Updates the posts state with the latest data from the backend
+	 */
 	const fetchPosts = useCallback(async () => {
 		try {
 			const data = await fetchAllPosts();
@@ -52,6 +57,11 @@ export const usePosts = () => {
 		}
 	}, [toast]);
 
+	/**
+	 * Fetch replies for a specific post
+	 * Stores replies in the replies state object keyed by post ID
+	 *
+	 */
 	const fetchReplies = useCallback(async (postId: string) => {
 		try {
 			const data = await fetchPostReplies(postId);
@@ -61,6 +71,11 @@ export const usePosts = () => {
 		}
 	}, []);
 
+	/**
+	 * Create a new forum post
+	 * Sends the post data to the backend and refreshes the posts list
+	 *
+	 */
 	const createPost = async (
 		title: string,
 		content: string,
@@ -69,7 +84,7 @@ export const usePosts = () => {
 		console.log("Creating post with author_name:", title, content, author_name);
 		try {
 			await createNewPost(title, content, author_name);
-			fetchPosts();
+			fetchPosts(); // Refresh posts list after creation
 		} catch (error) {
 			console.error("Error creating post:", error);
 			toast({
@@ -81,6 +96,11 @@ export const usePosts = () => {
 		}
 	};
 
+	/**
+	 * Add a reply to a specific post
+	 * Sends the reply to the backend and refreshes the replies for that post
+	 *
+	 */
 	const addReply = async (
 		postId: string,
 		content: string,
@@ -88,7 +108,7 @@ export const usePosts = () => {
 	) => {
 		try {
 			await addPostReply(postId, content, authorName);
-			fetchReplies(postId);
+			fetchReplies(postId); // Refresh replies for this post
 		} catch (error) {
 			console.error("Error adding reply:", error);
 			toast({
@@ -100,10 +120,15 @@ export const usePosts = () => {
 		}
 	};
 
+	/**
+	 * Upvote a post (increment votes by 1)
+	 * Sends the upvote request to the backend and refreshes the posts list
+	 *
+	 */
 	const upvotePost = async (postId: string) => {
 		try {
 			await upvotePostById(postId);
-			fetchPosts();
+			fetchPosts(); // Refresh posts to get updated vote count
 		} catch (error) {
 			console.error("Error upvoting post:", error);
 			toast({
@@ -115,10 +140,15 @@ export const usePosts = () => {
 		}
 	};
 
+	/**
+	 * Mark a post as answered
+	 * Sets the is_answered flag to true and refreshes the posts list
+	 *
+	 */
 	const markAsAnswered = async (postId: string) => {
 		try {
 			await markPostAsAnswered(postId);
-			fetchPosts();
+			fetchPosts(); // Refresh posts to get updated answered status
 		} catch (error) {
 			console.error("Error marking post as answered:", error);
 			toast({
@@ -130,16 +160,22 @@ export const usePosts = () => {
 		}
 	};
 
+	/**
+	 * Effect Hook: Automatic Polling
+	 */
 	useEffect(() => {
 		fetchPosts();
 
+		// Set up interval to fetch posts every 5 seconds
 		const intervalId = setInterval(fetchPosts, 5000);
 
+		// Cleanup: clear interval when component unmounts
 		return () => {
 			clearInterval(intervalId);
 		};
 	}, [fetchPosts]);
 
+	// Return all functions and state for use in components
 	return {
 		posts,
 		replies,

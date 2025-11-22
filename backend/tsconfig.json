@@ -1,17 +1,50 @@
+/**
+ * TypeScript Compiler Configuration for Backend
+ *
+ * This configuration enables ES modules (ESM) support for Node.js backend.
+ *
+ * Key Settings:
+ * - target: ES2020 - Modern JavaScript features for Node.js 14+
+ * - module: NodeNext - Outputs ES modules for Node.js
+ * - moduleResolution: NodeNext - Resolves modules the Node.js way
+ * - outDir: dist - Compiled output directory
+ * - rootDir: src - Source code directory
+ * - strict: true - Enables all strict type checking options
+ * - allowJs: true - Allows .js files alongside .ts files
+ *
+ * ESM Configuration:
+ * When compiling, local imports must use .js extension:
+ * import supabase from "./supabaseClient.js"  ✓
+ * import supabase from "./supabaseClient.ts"  ✗ (won't work with ESM)
+ *
+ * This matches the "type": "module" in package.json
+ */
 {
 	"compilerOptions": {
 		"target": "ES2020",
+
 		"module": "NodeNext",
+
 		"moduleResolution": "NodeNext",
+
 		"outDir": "dist",
+
 		"rootDir": "src",
+
 		"esModuleInterop": true,
+
 		"forceConsistentCasingInFileNames": true,
+
 		"strict": true,
+
 		"skipLibCheck": true,
+
 		"resolveJsonModule": true,
+
 		"allowJs": true,
+
 		"noImplicitAny": false
 	},
+
 	"include": ["src/**/*"]
 }

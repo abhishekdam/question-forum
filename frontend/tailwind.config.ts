@@ -1,3 +1,11 @@
+/**
+ * Tailwind CSS Configuration
+ *
+ * Responsive Design:
+ * Breakpoints: xs (375px), sm (640px), md (768px), lg (1024px), xl, 2xl
+ * Mobile-first design approach using these breakpoints
+ */
+
 import type { Config } from "tailwindcss";
 import tailwindcssAnimate from "tailwindcss-animate";
 
@@ -22,41 +30,60 @@ export default {
 				},
 			},
 			colors: {
+				// Base Colors
 				border: "hsl(var(--border))",
 				input: "hsl(var(--input))",
 				ring: "hsl(var(--ring))",
 				background: "hsl(var(--background))",
 				foreground: "hsl(var(--foreground))",
+
+				// Primary Color (main brand color)
 				primary: {
 					DEFAULT: "hsl(var(--primary))",
 					foreground: "hsl(var(--primary-foreground))",
 				},
+
+				// Secondary Color (accent)
 				secondary: {
 					DEFAULT: "hsl(var(--secondary))",
 					foreground: "hsl(var(--secondary-foreground))",
 				},
+
+				// Destructive Color (delete, error states)
 				destructive: {
 					DEFAULT: "hsl(var(--destructive))",
 					foreground: "hsl(var(--destructive-foreground))",
 				},
+
+				// Muted Color (disabled, secondary text)
 				muted: {
 					DEFAULT: "hsl(var(--muted))",
 					foreground: "hsl(var(--muted-foreground))",
 				},
+
+				// Accent Color (highlights, interactive elements)
 				accent: {
 					DEFAULT: "hsl(var(--accent))",
 					foreground: "hsl(var(--accent-foreground))",
 				},
+
+				// Popover Color (tooltips, dropdowns)
 				popover: {
 					DEFAULT: "hsl(var(--popover))",
 					foreground: "hsl(var(--popover-foreground))",
 				},
+
+				// Card Color (cards, panels)
 				card: {
 					DEFAULT: "hsl(var(--card))",
 					foreground: "hsl(var(--card-foreground))",
 				},
+
+				// Custom Forum Colors
 				vote: "hsl(var(--vote-color))",
 				answered: "hsl(var(--answered-color))",
+
+				// Sidebar Colors (for dark mode sidebar if used)
 				sidebar: {
 					DEFAULT: "hsl(var(--sidebar-background))",
 					foreground: "hsl(var(--sidebar-foreground))",
@@ -91,6 +118,7 @@ export default {
 					},
 				},
 			},
+
 			animation: {
 				"accordion-down": "accordion-down 0.2s ease-out",
 				"accordion-up": "accordion-up 0.2s ease-out",
