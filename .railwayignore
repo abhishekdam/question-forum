@@ -1,0 +1,43 @@
+# Railway Ignore File
+
+# Files and folders listed here won't be uploaded to Railway
+
+# Build artifacts - should be built fresh during deployment
+
+dist/
+build/
+\*.log
+
+# Node modules - will be installed during build
+
+node_modules/
+
+# Environment files - should not be in git
+
+.env
+.env.local
+.env.\*.local
+
+# Version control
+
+.git/
+.gitignore
+
+# IDE files
+
+.vscode/
+.idea/
+_.swp
+_.swo
+\*~
+
+# OS files
+
+.DS_Store
+Thumbs.db
+
+# Dependencies lock files (not needed with package.json)
+
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
