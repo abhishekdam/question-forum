@@ -26,8 +26,41 @@ dotenv.config();
 const app = express();
 const PORT = 4000;
 
+// Configure CORS to allow Railway frontend
+const allowedOrigins = [
+	"http://localhost:3000", // Local development
+	"http://localhost:5173", // Vite dev server
+	"https://question-forum-production-8636.up.railway.app", // Railway production
+	"https://*.railway.app", // Allow all Railway deployments
+];
+
+const corsOptions = {
+	origin: (
+		origin: string | undefined,
+		callback: (err: Error | null, allow?: boolean) => void
+	) => {
+		// Allow requests with no origin (like mobile apps or curl requests)
+		if (!origin) return callback(null, true);
+
+		if (
+			allowedOrigins.some((allowed) => {
+				if (allowed.includes("*")) {
+					const regex = new RegExp(allowed.replace("*", ".*"));
+					return regex.test(origin);
+				}
+				return origin === allowed;
+			})
+		) {
+			callback(null, true);
+		} else {
+			callback(new Error("Not allowed by CORS"));
+		}
+	},
+	credentials: true,
+};
+
 // Middleware setup
-app.use(cors()); // Enable CORS for cross-origin requests
+app.use(cors(corsOptions)); // Enable CORS for cross-origin requests
 app.use(morgan("dev")); // Log HTTP requests in development format
 app.use(express.json()); // Parse incoming JSON requests
 
