@@ -1,8 +1,9 @@
 import axios from "axios";
 import { Post, Reply } from "@/hooks/usePosts";
 
-// Backend API base URL
-const API_BASE_URL = "http://localhost:4000";
+// Backend API base URL - use environment variable or default to localhost
+const API_BASE_URL =
+	import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
 
 /**
  * Fetch All Posts
